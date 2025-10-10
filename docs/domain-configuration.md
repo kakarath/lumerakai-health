@@ -80,9 +80,9 @@ All traffic redirects to secure **https://www.lumerakai.ai**
 
 ## 🚀 Deployment Options
 
-### Option 1: GitHub Pages + Cloudflare
+### Option 1: GitHub Pages + Cloudflare (RECOMMENDED for local dev)
 ```bash
-# 1. Create gh-pages branch in public repo
+# 1. Deploy to GitHub Pages (free hosting)
 cd public-deploy
 git checkout -b gh-pages
 cp ../landing-page/index.html .
@@ -90,22 +90,46 @@ git add . && git commit -m "Deploy landing page"
 git push origin gh-pages
 
 # 2. Enable GitHub Pages in repo settings
-# 3. Point Cloudflare DNS to GitHub Pages IP: 185.199.108.153
+# 3. Point Cloudflare DNS to GitHub Pages IPs:
+#    185.199.108.153
+#    185.199.109.153
+#    185.199.110.153
+#    185.199.111.153
 ```
 
-### Option 2: Cloudflare Pages
+### Option 2: Cloudflare Pages (BEST for production)
 ```bash
 # 1. Connect GitHub repo to Cloudflare Pages
 # 2. Build settings:
 #    Build command: (none)
 #    Build output directory: /
 #    Root directory: landing-page
+# 3. Custom domain automatically configured
 ```
 
-### Option 3: Custom Server
+### Option 3: Cloudflare Tunnel (For local development)
 ```bash
-# Point DNS A records to your server IP
-# Ensure server handles HTTPS with valid certificates
+# 1. Install cloudflared
+brew install cloudflare/cloudflare/cloudflared
+
+# 2. Login to Cloudflare
+cloudflared tunnel login
+
+# 3. Create tunnel
+cloudflared tunnel create lumerakai
+
+# 4. Route traffic
+cloudflared tunnel route dns lumerakai www.lumerakai.ai
+
+# 5. Run tunnel (points to your local server)
+cloudflared tunnel run --url http://localhost:3000 lumerakai
+```
+
+### Option 4: Local IP (Not recommended for production)
+```bash
+# Only if you have a static public IP
+# Point DNS A records to your public IP
+# Requires port forwarding and SSL certificates
 ```
 
 ## ✅ Testing Checklist
