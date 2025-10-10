@@ -1,0 +1,12 @@
+{
+  "name": "lumerakai-landing",
+  "version": "1.0.0",
+  "description": "LumeraKai Health Landing Page",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
