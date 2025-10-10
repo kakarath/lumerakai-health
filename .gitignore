@@ -1,0 +1,67 @@
+# SECURITY - Environment variables and secrets
+.env*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+config/secrets/
+secrets/
+credentials/
+
+# HIPAA - Patient data and PHI
+data/patients/
+data/phi/
+*.phi
+*.patient
+test-data/real/
+
+# Node modules and dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+database/backups/
+
+# Docker and deployment
+.docker/
+docker-compose.override.yml
+kubernetes/production/
+
+# Logs and monitoring
+logs/
+*.log
+audit-logs/
+monitoring/
+
+# OS and IDE
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+.idea/
+
+# Build artifacts
+build/
+dist/
+.next/
+coverage/
+
+# PROPRIETARY IP - Keep private
+agents/src/proprietary/
+analytics/piqi/
+security/enterprise/
+integrations/production/
+ai-models/custom/
+algorithms/predictive/
+
+# Compliance and legal
+compliance/audit-reports/
+legal/contracts/
+certifications/private/
