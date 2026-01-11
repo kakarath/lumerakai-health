@@ -1,0 +1,4 @@
+# Redirect all variations to main domain
+https://lumerakai.com/* https://lumerakai.ai/:splat 301!
+https://www.lumerakai.com/* https://lumerakai.ai/:splat 301!
+https://www.lumerakai.ai/* https://lumerakai.ai/:splat 301!
