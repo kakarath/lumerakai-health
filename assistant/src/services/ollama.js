@@ -30,21 +30,21 @@ Provide analysis in JSON format:
       model: this.model,
       prompt,
       stream: false,
-      format: 'json'
+      format: 'json',
+      responseType: 'json'
     });
 
-    try {
-      return JSON.parse(response.data.response);
-    } catch (e) {
-      // Fallback if JSON parsing fails
-      return {
-        summary: response.data.response.substring(0, 200),
-        keyPoints: ["Analysis completed"],
-        actionItems: ["Review conversation"],
-        urgencyLevel: "low",
-        suggestedFollowUp: "Follow up as needed"
-      };
-    }
+    const data = response.data?.response ?? response.data;
+    if (typeof data === 'object' && data !== null) return data;
+    // Fallback: safe string truncation, no JSON.parse on untrusted input
+    const raw = typeof data === 'string' ? data.substring(0, 200) : 'Analysis unavailable';
+    return {
+      summary: raw,
+      keyPoints: ['Analysis completed'],
+      actionItems: ['Review conversation'],
+      urgencyLevel: 'low',
+      suggestedFollowUp: 'Follow up as needed'
+    };
   }
 
   async generateClinicalSummary(patientData) {

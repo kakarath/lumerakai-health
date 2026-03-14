@@ -14,14 +14,39 @@ const insightsRoutes = require('./routes/insights');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// CSRF protection — enforce custom header on all state-changing requests.
+// Bearer token APIs are CSRF-safe when browsers cannot set custom headers
+// cross-origin (CORS blocks it). This middleware makes that guarantee explicit.
+function csrfProtection(req, res, next) {
+  const stateMutating = ['POST', 'PUT', 'PATCH', 'DELETE'];
+  if (stateMutating.includes(req.method)) {
+    const hasBearer = /^Bearer /i.test(req.headers.authorization || '');
+    const hasCustomHeader = req.headers['x-requested-with'] === 'XMLHttpRequest';
+    if (!hasBearer && !hasCustomHeader) {
+      return res.status(403).json({ error: 'CSRF check failed' });
+    }
+  }
+  next();
+}
+
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", 'data:']
+    }
+  }
+}));
 app.use(cors({
   origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 app.use(express.json({ limit: '10mb' }));
+app.use(csrfProtection);
 
 // Health check
 app.get('/health', (req, res) => {
