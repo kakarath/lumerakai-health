@@ -1,12 +1,12 @@
 #!/bin/bash
 
-echo "🚀 Deploying LumeraKai Health 2025 - Option 1: Domain Fix"
+echo "🚀 Deploying LumeraKai Health 2026 - Option 1: Domain Fix"
 
 # Method 1: Simple GitHub Pages deployment
 echo "📄 Deploying to GitHub Pages..."
 
 # Copy new landing page to public repo
-cp landing-page-2025.html public-deploy/index.html
+cp landing-page-2026.html public-deploy/index.html
 
 cd public-deploy
 
@@ -15,7 +15,7 @@ git checkout main
 
 # Add and commit
 git add index.html
-git commit -m "Deploy LumeraKai Health 2025 - Stroke care and elder abuse prevention focus"
+git commit -m "Deploy LumeraKai Health 2026 - Stroke care and elder abuse prevention focus"
 
 # Push to trigger GitHub Pages
 git push origin main
@@ -27,7 +27,7 @@ echo "🌐 Should be live at: https://kakarath.github.io/lumerakai-health/"
 echo ""
 echo "📦 Creating Netlify deployment package..."
 mkdir -p netlify-deploy
-cp landing-page-2025.html netlify-deploy/index.html
+cp landing-page-2026.html netlify-deploy/index.html
 
 cat > netlify-deploy/_redirects << 'EOF'
 # Redirect all domains to main site
@@ -48,7 +48,7 @@ SERVER_PID=$!
 sleep 2
 
 echo "✅ Local test server running"
-echo "🌐 Test at: http://localhost:8080/landing-page-2025.html"
+echo "🌐 Test at: http://localhost:8080/landing-page-2026.html"
 echo ""
 echo "🛑 Press Ctrl+C to stop local server"
 
