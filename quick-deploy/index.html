@@ -197,7 +197,8 @@
                     <i class="fab fa-github text-2xl"></i>
                 </a>
             </div>
-            <p class="text-gray-500 text-sm mt-4">© 2025 LumeraKai Health. Born from real family healthcare crises.</p>
+            <p class="text-gray-500 text-sm mt-4">© <span id="year"></span> LumeraKai Health. Born from real family healthcare crises.</p>
+            <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
         </div>
     </footer>
 </body>
