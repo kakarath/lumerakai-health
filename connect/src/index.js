@@ -7,8 +7,10 @@ const FHIRService = require('./services/fhirService');
 const app = express();
 const PORT = process.env.PORT || 3003;
 
+const ALLOWED_ORIGINS = (process.env.CORS_ORIGINS || '').split(',').filter(Boolean);
+
 app.use(helmet());
-app.use(cors());
+app.use(cors({ origin: ALLOWED_ORIGINS.length ? ALLOWED_ORIGINS : false }));
 app.use(express.json());
 
 const fhirService = new FHIRService();
@@ -22,8 +24,8 @@ app.post('/fhir/patients', async (req, res) => {
   try {
     const patient = await fhirService.createPatient(req.body);
     res.status(201).json(patient);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -31,8 +33,8 @@ app.get('/fhir/patients/:id', async (req, res) => {
   try {
     const patient = await fhirService.getPatient(req.params.id);
     res.json(patient);
-  } catch (error) {
-    res.status(404).json({ error: 'Patient not found' });
+  } catch {
+    res.status(500).json({ error: 'Patient not found' });
   }
 });
 
@@ -40,8 +42,8 @@ app.get('/fhir/patients', async (req, res) => {
   try {
     const patients = await fhirService.searchPatients(req.query);
     res.json(patients);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -51,8 +53,8 @@ app.post('/fhir/observations', async (req, res) => {
     const { patientId, ...observationData } = req.body;
     const observation = await fhirService.createObservation(patientId, observationData);
     res.status(201).json(observation);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -60,8 +62,8 @@ app.get('/fhir/patients/:id/observations', async (req, res) => {
   try {
     const observations = await fhirService.getPatientObservations(req.params.id);
     res.json(observations);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

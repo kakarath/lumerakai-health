@@ -5,12 +5,12 @@ const router = express.Router();
 // Retrieves patient data from FHIR server
 router.get('/patient/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id.replace(/[^a-zA-Z0-9-_]/g, '');
     
     // Mock FHIR patient data
     const patient = {
       resourceType: "Patient",
-      id: id,
+      id,
       name: [{ family: "Doe", given: ["Jane"] }],
       birthDate: "1985-03-15",
       gender: "female",
@@ -27,8 +27,8 @@ router.get('/patient/:id', async (req, res) => {
     };
 
     res.json(patient);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -36,7 +36,7 @@ router.get('/patient/:id', async (req, res) => {
 // Retrieves patient appointments
 router.get('/appointments/:patientId', async (req, res) => {
   try {
-    const { patientId } = req.params;
+    const patientId = req.params.patientId.replace(/[^a-zA-Z0-9-_]/g, '');
     
     const appointments = {
       resourceType: "Bundle",
@@ -59,8 +59,8 @@ router.get('/appointments/:patientId', async (req, res) => {
     };
 
     res.json(appointments);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -78,8 +78,8 @@ router.post('/appointment', async (req, res) => {
     };
 
     res.status(201).json(createdAppointment);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

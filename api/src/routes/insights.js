@@ -5,7 +5,7 @@ const router = express.Router();
 // Provides clinical decision support alerts
 router.get('/clinical-alerts/:patientId', async (req, res) => {
   try {
-    const { patientId } = req.params;
+    const patientId = req.params.patientId.replace(/[^a-zA-Z0-9-_]/g, '');
     
     const alerts = [
       {
@@ -27,8 +27,8 @@ router.get('/clinical-alerts/:patientId', async (req, res) => {
     ];
 
     res.json({ alerts });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -36,7 +36,7 @@ router.get('/clinical-alerts/:patientId', async (req, res) => {
 // PIQI - Patient Intelligence & Quality Insights
 router.get('/quality-measures/:patientId', async (req, res) => {
   try {
-    const { patientId } = req.params;
+    const patientId = req.params.patientId.replace(/[^a-zA-Z0-9-_]/g, '');
     
     const qualityInsights = {
       hedisScores: {
@@ -56,8 +56,8 @@ router.get('/quality-measures/:patientId', async (req, res) => {
     };
 
     res.json(qualityInsights);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -86,8 +86,8 @@ router.post('/wellness-followup', async (req, res) => {
     };
 
     res.json(followUpPlan);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

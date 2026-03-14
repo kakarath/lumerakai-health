@@ -10,7 +10,8 @@ export function useAgentWebSocket() {
     // Initialize WebSocket connection
     const connectWebSocket = () => {
       try {
-        ws.current = new WebSocket(process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3002');
+        const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'wss://localhost:3002';
+        ws.current = new WebSocket(wsUrl);
         
         ws.current.onopen = () => {
           setIsConnected(true);
@@ -18,8 +19,12 @@ export function useAgentWebSocket() {
         };
 
         ws.current.onmessage = (event) => {
-          const data = JSON.parse(event.data);
-          handleMessage(data);
+          try {
+            const data = JSON.parse(event.data);
+            if (data && typeof data === 'object') handleMessage(data);
+          } catch {
+            console.error('Invalid WebSocket message');
+          }
         };
 
         ws.current.onclose = () => {

@@ -30,8 +30,8 @@ router.post('/conflict-check', async (req, res) => {
       conflicts,
       recommendations
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -55,8 +55,8 @@ router.post('/optimize', async (req, res) => {
     };
 
     res.json(optimizedSchedule);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

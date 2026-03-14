@@ -16,12 +16,13 @@ export function useConversations(patientId) {
   const fetchConversations = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/conversations?patientId=${patientId}`);
+      const safeId = encodeURIComponent(String(patientId).replace(/[^a-zA-Z0-9-_]/g, ''));
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/conversations?patientId=${safeId}`);
       if (!response.ok) throw new Error('Failed to fetch conversations');
       const data = await response.json();
       setConversations(data.filter(conv => conv.patientId === patientId));
-    } catch (err) {
-      setError(err.message);
+    } catch {
+      setError('Failed to fetch conversations');
     } finally {
       setLoading(false);
     }
@@ -40,7 +41,7 @@ export function useConversations(patientId) {
       setConversations(prev => [newConversation, ...prev]);
       return newConversation;
     } catch (err) {
-      setError(err.message);
+      setError('Failed to create conversation');
       throw err;
     } finally {
       setLoading(false);
