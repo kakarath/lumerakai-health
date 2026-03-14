@@ -1,6 +1,10 @@
 // HIPAA Compliance Module for LumeraKai Health
 // Ensures healthcare data protection and privacy compliance
 
+const crypto = require('crypto');
+
+const ALLOWED_PHI_KEYS = new Set(['demographics', 'conditions', 'medications', 'vitals', 'care-plan', 'appointments']);
+
 class HIPAACompliance {
   constructor() {
     this.auditLog = [];
@@ -10,14 +14,14 @@ class HIPAACompliance {
 
   // Data encryption for PHI (Protected Health Information)
   encryptPHI(data) {
-    const crypto = require('crypto');
     const algorithm = 'aes-256-gcm';
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipher(algorithm, this.encryptionKey);
-    
+    const key = crypto.scryptSync(this.encryptionKey, 'lumerakai-salt', 32);
+    const cipher = crypto.createCipheriv(algorithm, key, iv);
+
     let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    
+
     return {
       encrypted,
       iv: iv.toString('hex'),
@@ -27,16 +31,31 @@ class HIPAACompliance {
 
   // Data decryption for PHI
   decryptPHI(encryptedData) {
-    const crypto = require('crypto');
     const algorithm = 'aes-256-gcm';
-    const decipher = crypto.createDecipher(algorithm, this.encryptionKey);
-    
+    const key = crypto.scryptSync(this.encryptionKey, 'lumerakai-salt', 32);
+    const iv = Buffer.from(encryptedData.iv, 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+
     decipher.setAuthTag(Buffer.from(encryptedData.tag, 'hex'));
-    
+
     let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
-    
-    return JSON.parse(decrypted);
+
+    let parsed;
+    try {
+      parsed = JSON.parse(decrypted);
+    } catch {
+      throw new Error('HIPAA: Decrypted PHI is not valid JSON');
+    }
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+      throw new Error('HIPAA: Decrypted PHI has unexpected structure');
+    }
+    // Validate only known PHI keys are present
+    const unknownKeys = Object.keys(parsed).filter(k => !ALLOWED_PHI_KEYS.has(k));
+    if (unknownKeys.length > 0) {
+      throw new Error(`HIPAA: Unexpected PHI fields: ${unknownKeys.join(', ')}`);
+    }
+    return parsed;
   }
 
   // Access control validation
