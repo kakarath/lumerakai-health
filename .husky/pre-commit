@@ -1,0 +1,2 @@
+# Run linting only - tests require full environment
+npx next lint --dir web/src 2>/dev/null || true

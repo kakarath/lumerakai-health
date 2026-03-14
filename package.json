@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "description": "AI-powered healthcare platform for intelligent care coordination",
   "main": "index.js",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
   "scripts": {
     "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
     "dev:api": "cd api && npm run dev",
@@ -13,7 +18,9 @@
     "test": "npm run test:api && npm run test:web",
     "test:api": "cd api && npm test",
     "test:web": "cd web && npm test",
-    "setup": "./scripts/setup.sh"
+    "setup": "./scripts/setup.sh",
+    "commit": "cz",
+    "prepare": "husky"
   },
   "keywords": [
     "healthcare",
@@ -26,7 +33,12 @@
   "author": "Aperioniq, Inc.",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@commitlint/cli": "^20.4.4",
+    "@commitlint/config-conventional": "^20.4.4",
+    "commitizen": "^4.3.1",
+    "concurrently": "^8.2.2",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7"
   },
   "workspaces": [
     "api",
