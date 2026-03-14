@@ -36,7 +36,12 @@ Provide analysis in JSON format:
       response_format: { type: 'json_object' }
     });
 
-    return JSON.parse(response.data.choices[0].message.content);
+    let parsed;
+    try { parsed = JSON.parse(response.data.choices[0].message.content); } catch {
+      throw new Error('Mistral: Response was not valid JSON');
+    }
+    if (typeof parsed !== 'object' || parsed === null) throw new Error('Mistral: Unexpected response structure');
+    return parsed;
   }
 
   async generateClinicalSummary(patientData) {

@@ -32,8 +32,8 @@ router.post('/analyze', async (req, res) => {
     };
 
     res.json(analysis);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Analysis failed' });
   }
 });
 
@@ -50,8 +50,8 @@ router.post('/clarify', async (req, res) => {
     ];
 
     res.json({ questions: clarifyingQuestions });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Clarification request failed' });
   }
 });
 

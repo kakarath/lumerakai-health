@@ -29,7 +29,12 @@ Provide analysis in JSON format:
 
     const result = await this.model.generateContent(prompt);
     const response = await result.response;
-    return JSON.parse(response.text());
+    let parsed;
+    try { parsed = JSON.parse(response.text()); } catch {
+      throw new Error('Gemini: Response was not valid JSON');
+    }
+    if (typeof parsed !== 'object' || parsed === null) throw new Error('Gemini: Unexpected response structure');
+    return parsed;
   }
 
   async generateClinicalSummary(patientData) {

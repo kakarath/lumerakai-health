@@ -9,7 +9,10 @@ const { LumeraOrchestrator } = require('../../agents/src/lumeraAgents');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "*" }
+  cors: {
+    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'],
+    methods: ['GET', 'POST']
+  }
 });
 
 const PORT = process.env.PORT || 3002;
@@ -44,8 +47,8 @@ io.on('connection', (socket) => {
 
       // Send analysis back
       socket.emit('conversation:analysis', analysis);
-    } catch (error) {
-      socket.emit('conversation:error', { error: error.message });
+    } catch {
+      socket.emit('conversation:error', { error: 'Conversation processing failed' });
     }
   });
 
@@ -55,8 +58,8 @@ io.on('connection', (socket) => {
       // Process voice to text (placeholder - would integrate with speech-to-text service)
       const transcript = 'Voice processing not implemented yet';
       socket.emit('voice:transcript', { transcript });
-    } catch (error) {
-      socket.emit('voice:error', { error: error.message });
+    } catch {
+      socket.emit('voice:error', { error: 'Voice processing failed' });
     }
   });
 

@@ -3,7 +3,16 @@ const { Conversation, Patient } = require('../models');
 const axios = require('axios');
 const router = express.Router();
 
-// Get all conversations
+const ALLOWED_CONVERSATION_FIELDS = ['patientId', 'transcript', 'participants'];
+const ASSISTANT_URL = process.env.ASSISTANT_SERVICE_URL || 'http://assistant:3002';
+
+function pickAllowed(body, allowed) {
+  return allowed.reduce((obj, key) => {
+    if (Object.prototype.hasOwnProperty.call(body, key)) obj[key] = body[key];
+    return obj;
+  }, {});
+}
+
 router.get('/', async (req, res) => {
   try {
     const conversations = await Conversation.findAll({
@@ -11,31 +20,21 @@ router.get('/', async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
     res.json(conversations);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Failed to retrieve conversations' });
   }
 });
 
-// Create new conversation with AI analysis
 router.post('/', async (req, res) => {
   try {
-    const { patientId, transcript, participants } = req.body;
-    
-    // Create conversation record
-    const conversation = await Conversation.create({
-      patientId,
-      transcript,
-      participants
-    });
+    const { patientId, transcript, participants } = pickAllowed(req.body, ALLOWED_CONVERSATION_FIELDS);
+    const conversation = await Conversation.create({ patientId, transcript, participants });
 
-    // Send to Assistant service for analysis
     try {
-      const analysisResponse = await axios.post('http://assistant:3002/analyze-conversation', {
+      const analysisResponse = await axios.post(`${ASSISTANT_URL}/analyze-conversation`, {
         conversation: transcript,
         context: { patientId, participants }
       });
-      
-      // Update conversation with analysis
       await conversation.update({
         analysis: analysisResponse.data,
         urgencyLevel: analysisResponse.data.urgencyLevel,
@@ -46,23 +45,18 @@ router.post('/', async (req, res) => {
     }
 
     res.status(201).json(conversation);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+  } catch {
+    res.status(400).json({ error: 'Failed to create conversation' });
   }
 });
 
-// Get conversation by ID
 router.get('/:id', async (req, res) => {
   try {
-    const conversation = await Conversation.findByPk(req.params.id, {
-      include: [Patient]
-    });
-    if (!conversation) {
-      return res.status(404).json({ error: 'Conversation not found' });
-    }
+    const conversation = await Conversation.findByPk(req.params.id, { include: [Patient] });
+    if (!conversation) return res.status(404).json({ error: 'Conversation not found' });
     res.json(conversation);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch {
+    res.status(500).json({ error: 'Failed to retrieve conversation' });
   }
 });
 

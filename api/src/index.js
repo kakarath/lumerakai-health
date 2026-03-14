@@ -16,7 +16,11 @@ const PORT = process.env.PORT || 3001;
 
 // Security middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json({ limit: '10mb' }));
 
 // Health check
@@ -39,7 +43,8 @@ app.use((err, req, res, next) => {
 });
 
 // Database sync and server start
-sequelize.sync({ alter: true }).then(() => {
+const syncOptions = process.env.NODE_ENV === 'production' ? {} : { alter: true };
+sequelize.sync(syncOptions).then(() => {
   console.log('📊 Database synced');
   app.listen(PORT, () => {
     console.log(`🚀 LumeraKai API running on port ${PORT}`);
