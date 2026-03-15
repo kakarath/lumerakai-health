@@ -37,8 +37,6 @@
     "api",
     "web",
     "assistant",
-    "insights",
-    "connect",
-    "agents"
+    "connect"
   ]
 }
