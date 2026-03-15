@@ -1,15 +1,14 @@
 #!/bin/bash
 
-# Deploy LumeraKai Dashboard to app.lumerakai.ai
+# Deploy LumeraKai Dashboard to app.lumerakai.ai via Cloudflare Pages
 echo "🚀 Deploying LumeraKai Dashboard..."
 
-# Build Next.js app
-cd web
-npm run build
-npm run export
+cd "$(dirname "$0")/../web"
 
-# Deploy to Netlify with subdomain
-netlify deploy --prod --dir=out --site=app-lumerakai
+npm install
+npm run build
+
+npx wrangler pages deploy out --project-name=lumerakai-dashboard
 
 echo "✅ Dashboard deployed to: https://app.lumerakai.ai"
 echo "🎯 Investor demo ready!"

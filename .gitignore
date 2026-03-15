@@ -1,3 +1,9 @@
+# Submodule directories (tracked via .gitmodules, not as loose dirs)
+lumerakai-health/
+private-deploy/
+private-repo/
+public-repo/
+
 # SECURITY - Environment variables and secrets
 .env*
 !.env.example

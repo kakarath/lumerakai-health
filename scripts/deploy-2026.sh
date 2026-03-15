@@ -28,23 +28,7 @@ git checkout main
 echo "✅ Deployed to main and gh-pages"
 echo "🌐 Live at: https://lumerakai.ai"
 
-# Method 2: Create simple Netlify deployment
-echo ""
-echo "📦 Creating Netlify deployment package..."
-mkdir -p netlify-deploy
-cp landing-page-2026.html netlify-deploy/index.html
-
-cat > netlify-deploy/_redirects << 'EOF'
-# Redirect all domains to main site
-https://lumerakai.com/* https://lumerakai.ai/:splat 301!
-https://www.lumerakai.com/* https://lumerakai.ai/:splat 301!
-https://www.lumerakai.ai/* https://lumerakai.ai/:splat 301!
-EOF
-
-echo "✅ Netlify package ready in netlify-deploy/"
-echo "🌐 Drag netlify-deploy folder to https://app.netlify.com/drop"
-
-# Method 3: Test locally
+# Method 2: Test locally
 echo ""
 echo "🔍 Testing locally..."
 cd ..
@@ -63,8 +47,7 @@ kill $SERVER_PID
 
 echo ""
 echo "🎯 Next Steps:"
-echo "1. GitHub Pages: https://kakarath.github.io/lumerakai-health/"
-echo "2. Netlify: Drag netlify-deploy/ to https://app.netlify.com/drop"
-echo "3. Point lumerakai.ai DNS to working deployment"
+echo "1. Landing page: https://lumerakai.ai"
+echo "2. Dashboard: run ./scripts/deploy-dashboard.sh"
 echo ""
-echo "✅ Option 1 Complete: Professional web presence ready!"
+echo "✅ Deploy complete!"
