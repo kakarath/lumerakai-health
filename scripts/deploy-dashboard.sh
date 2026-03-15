@@ -1,14 +1,15 @@
 #!/bin/bash
 
-# Deploy LumeraKai Dashboard to app.lumerakai.ai via Cloudflare Pages
+# Deploy LumeraKai Dashboard to app.lumerakai.ai
+# Cloudflare Pages auto-deploys on push to main — this script is for manual triggers
 echo "🚀 Deploying LumeraKai Dashboard..."
 
-cd "$(dirname "$0")/../web"
+cd "$(dirname "$0")/.."
 
-npm install
-npm run build
+git add web/
+git diff --cached --quiet && echo "No web changes to deploy." && exit 0
 
-npx wrangler pages deploy out --project-name=lumerakai-dashboard
+git commit -m "deploy(dashboard): update web app"
+git push origin main
 
-echo "✅ Dashboard deployed to: https://app.lumerakai.ai"
-echo "🎯 Investor demo ready!"
+echo "✅ Pushed — Cloudflare Pages will build and deploy to https://app.lumerakai.ai"
