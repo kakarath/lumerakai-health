@@ -5,23 +5,28 @@ echo "🚀 Deploying LumeraKai Health 2026 - Option 1: Domain Fix"
 # Method 1: Simple GitHub Pages deployment
 echo "📄 Deploying to GitHub Pages..."
 
-# Copy new landing page to public repo
+# Copy new landing page to public repo (root + landing-page/ for Cloudflare Pages)
 cp landing-page-2026.html public-deploy/index.html
+cp landing-page-2026.html public-deploy/landing-page/index.html
 
 cd public-deploy
 
-# Ensure we're on main branch
+# Deploy to main
 git checkout main
-
-# Add and commit
-git add index.html
+git add index.html landing-page/index.html
 git commit -m "Deploy LumeraKai Health 2026 - Stroke care and elder abuse prevention focus"
-
-# Push to trigger GitHub Pages
 git push origin main
 
-echo "✅ Deployed to GitHub Pages"
-echo "🌐 Should be live at: https://kakarath.github.io/lumerakai-health/"
+# Deploy to gh-pages (serves lumerakai.ai via GitHub Pages + Cloudflare)
+git checkout gh-pages
+git add index.html landing-page/index.html
+git commit -m "Deploy LumeraKai Health 2026 - Stroke care and elder abuse prevention focus"
+git push origin gh-pages
+
+git checkout main
+
+echo "✅ Deployed to main and gh-pages"
+echo "🌐 Live at: https://lumerakai.ai"
 
 # Method 2: Create simple Netlify deployment
 echo ""
