@@ -1,0 +1,3 @@
+[submodule "public-deploy"]
+	path = public-deploy
+	url = https://github.com/kakarath/lumerakai-health.git
